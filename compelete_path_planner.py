@@ -23,15 +23,15 @@ np.set_printoptions(precision=6, suppress=True) #set up printing to number Signi
 print("SOLUTION STARTS FROM HERE")
 print(" ")
 
-#move the joints to the box
+
 qgrasp = [-0.463648, 0.68088 , 1.477533, 0, 0.98318 , -2.034444]
-robot.SetActiveDOFValues(qgrasp)
-planner = orpy.RaveCreatePlanner(env, 'birrt') # Using bidirectional RRT
-params = orpy.Planner.PlannerParameters()
+robot.SetActiveDOFValues(qgrasp)  #move the joints to the box
+planner = orpy.RaveCreatePlanner(env, 'birrt') # Using bidirectional RRT, Specify planner with method and envorinment
+params = orpy.Planner.PlannerParameters()  # Initializ planner parameters such as, robots, active joints, goal config, post processing
 params.SetRobotActiveJoints(robot)
 params.SetGoalConfig(qgrasp)
 params.SetPostProcessing('ParabolicSmoother', '<_nmaxiterations>40</_nmaxiterations>')
-planner.InitPlan(robot, params)
+planner.InitPlan(robot, params)    #initialize plans with robot and parameters
 
 # Plan a trajectory
 traj = orpy.RaveCreateTrajectory(env, '')
@@ -39,7 +39,7 @@ planner.PlanPath(traj)
 
 # Execute the trajectory
 controller = robot.GetController()
-controller.SetPath(traj)
+controller.SetPath(traj)  #passing the trajectories to the controller
 
 times = np.arange(0, traj.GetDuration(), 0.01)
 qvect = np.zeros((len(times), robot.GetActiveDOF()))
